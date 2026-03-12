@@ -47,6 +47,9 @@ class Controller():
         # Input text buffer
         self.usr_txt = ""
 
+        # Play mode flag: False = entry mode, True = game play mode
+        self.play_mode = False
+
     #event processing	
     def process_events(self, events):
         for event in events:
@@ -129,18 +132,31 @@ class Controller():
                     self.ip_mode = True
                     self.ip_txt = ""
                 
+                if event.key == K_F5:
+                    if self.view.entry_screen:
+                        self.view.entry_screen = False
+                        self.view.play_screen = True
+                        self.play_mode = True
+                        self.model.playing = False
+                        self.model.start_30s_timer = True
+
                 if event.key == K_COMMA:
                     if(self.view.entry_screen):
                         self.view.entry_screen = False
                         self.view.play_screen = True
+                        self.play_mode = True
                         self.model.playing = False
                         self.model.start_30s_timer = True
 
                 if event.key == K_F12:
-                    if self.view.entry_screen:
+                    if self.view.entry_screen or self.view.play_screen:
                         self.model.wipe_all() # Wipe teams
                         self.view.row = 0 # Reset index for player entry screen
                         self.view.col = 0
+                        if self.view.play_screen:
+                            self.view.play_screen = False
+                            self.view.entry_screen = True
+                            self.play_mode = False
 
         if self.new_name:
             prompt = "New Player ID detected, input new codename. Press ENTER to save:"

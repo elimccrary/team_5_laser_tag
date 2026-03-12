@@ -50,7 +50,7 @@ class Screen(): #testing commiting from terminal
 
         elif not self.entry_screen and self.play_screen:
             #Draw play_screen
-            self.draw_action_screen()
+            self.draw_game_play()
         
 
     def draw_entries(self):
@@ -111,12 +111,61 @@ class Screen(): #testing commiting from terminal
         #if self.col % 2 == 1:
          #   self.screen.blit(last_entry, (entry_x-75, entry_y))
 
-    # Initalizes the text on entry screen and stores into an array to be printed
+    def draw_game_play(self):
+        # Screen title
+        title = self.font.render("GAME IN PROGRESS", True, (255, 255, 0))
+        self.screen.blit(title, (320, 10))
+
+        # Team headers
+        red_title = self.font.render("RED TEAM", True, (255, 0, 0))
+        green_title = self.font.render("GREEN TEAM", True, (0, 255, 0))
+        self.screen.blit(red_title, (100, 35))
+        self.screen.blit(green_title, (500, 35))
+
+        # Divider between teams
+        pygame.draw.line(self.screen, (200, 200, 200), (400, 30), (400, 750), 2)
+
+        # Column headers — red side
+        self.screen.blit(self.font.render("Equip ID", True, (200, 200, 200)), (50, 60))
+        self.screen.blit(self.font.render("Player ID", True, (200, 200, 200)), (140, 60))
+        self.screen.blit(self.font.render("Codename", True, (200, 200, 200)), (230, 60))
+
+        # Column headers — green side
+        self.screen.blit(self.font.render("Equip ID", True, (200, 200, 200)), (420, 60))
+        self.screen.blit(self.font.render("Player ID", True, (200, 200, 200)), (510, 60))
+        self.screen.blit(self.font.render("Codename", True, (200, 200, 200)), (600, 60))
+
+        # Red team players
+        y = 85
+        for equip_id, (player_id, name) in self.model.red_team.items():
+            self.screen.blit(self.font.render(str(equip_id), True, (255, 100, 100)), (50, y))
+            self.screen.blit(self.font.render(str(player_id), True, (255, 255, 255)), (140, y))
+            self.screen.blit(self.font.render(str(name), True, (255, 255, 255)), (230, y))
+            y += 25
+
+        # Green team players
+        y = 85
+        for equip_id, (player_id, name) in self.model.green_team.items():
+            self.screen.blit(self.font.render(str(equip_id), True, (100, 255, 100)), (420, y))
+            self.screen.blit(self.font.render(str(player_id), True, (255, 255, 255)), (510, y))
+            self.screen.blit(self.font.render(str(name), True, (255, 255, 255)), (600, y))
+            y += 25
+
+        # Game status / time remaining
+        time_left = self.model.get_time_left()
+        time_text = self.font.render("Time Remaining: " + str(time_left), True, (255, 255, 255))
+        self.screen.blit(time_text, (300, 760))
+
+        # F12 hint
+        hint = self.font.render("Press F12 to end game and return to entry screen", True, (180, 180, 180))
+        self.screen.blit(hint, (200, 780))
+
+    # Initializes the text on entry screen and stores into an array to be printed
     def init_entry_options(self):
         add_player = self.font.render("1. Enter playerID then hit TAB to enter equipment ID", True, (255,255,255))
         config_network = self.font.render("2. Press F2 to configure server IP", True, (255,255,255))
         wipe_players = self.font.render("3. Press F12 to clear all entries", True, (255,255,255))
-        action_screen = self.font.render("4. Press COMMA for action screen and game start", True, (255,255,255))
+        action_screen = self.font.render("4. Press F5 (or COMMA) for action screen and game start", True, (255,255,255))
         exit_game = self.font.render("5. Press ESC to exit the program", True, (255,255,255))
         
         self.entry_screen_options.append(add_player)
